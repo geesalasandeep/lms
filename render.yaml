@@ -26,7 +26,7 @@ services:
     plan: free
     rootDir: frontend
     buildCommand: npm install && npm run build
-    startCommand: npx -y serve -s dist/frontend/browser -p 10000
+    startCommand: npm run start:prod
     envVars:
       - key: PORT
         value: 10000
