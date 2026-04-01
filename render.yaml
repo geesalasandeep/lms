@@ -1,6 +1,6 @@
 version: "1"
 services:
-  # --- 1. Backend Web Service (Node.js) ---
+  # 1. Backend Service (Node.js)
   - type: web
     name: lms-backend-antigravity
     env: node
@@ -12,15 +12,15 @@ services:
       - key: PORT
         value: 3000
       - key: MONGODB_URI
-        sync: false # Set this in Render Dashboard to your MongoDB Atlas URI
+        sync: false
       - key: JWT_SECRET
         generateValue: true
       - key: NODE_VERSION
         value: 20
 
-  # --- 2. Frontend Static Site (Angular) ---
-  # IMPORTANT: type must be static_site to support routingRules
-  - type: static_site
+  # 2. Frontend (Static Site)
+  # NOTE: Using 'static' type with version '1'
+  - type: static
     name: lms-frontend-antigravity
     rootDir: frontend
     buildCommand: npm install && npm run build
