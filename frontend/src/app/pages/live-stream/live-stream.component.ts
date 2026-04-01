@@ -487,4 +487,15 @@ export class LiveStreamComponent implements OnInit, OnDestroy {
       alert('Push notifications not enabled/supported in this environment. (ServiceWorkers require HTTPS or localhost)');
     }
   }
+
+  exitSession() {
+    if (this.isBroadcasting) {
+      if (confirm('Are you sure you want to end this live session for everyone?')) {
+        this.stopBroadcast();
+        this.router.navigate(['/admin']);
+      }
+    } else {
+      this.router.navigate(['/dashboard']);
+    }
+  }
 }

@@ -1,6 +1,9 @@
 <div class="course-detail-container" *ngIf="!loading && data">
     <div class="hero">
         <div class="hero-content">
+            <button class="btn btn-link text-white p-0 mb-3" routerLink="/dashboard">
+                <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+            </button>
             <h1>{{ data.course.title }}</h1>
             <p>{{ data.course.description }}</p>
             <div class="meta">

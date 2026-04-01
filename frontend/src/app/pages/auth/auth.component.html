@@ -1,13 +1,17 @@
 <div class="auth-container">
   <div class="auth-card">
     <div class="branding">
+      <button class="btn btn-link text-white p-0 mb-3" routerLink="/">
+        <i class="bi bi-arrow-left"></i> Back to Home
+      </button>
       <h2>LearnStream</h2>
       <p>Your Gateway to Knowledge</p>
     </div>
 
     <div class="tabs">
       <button [class.active]="activeTab === 'login'" (click)="activeTab = 'login'; errorMsg = ''">Login</button>
-      <button [class.active]="activeTab === 'register'" (click)="activeTab = 'register'; errorMsg = ''">Register</button>
+      <button [class.active]="activeTab === 'register'"
+        (click)="activeTab = 'register'; errorMsg = ''">Register</button>
       <button [class.active]="activeTab === 'otp'" (click)="activeTab = 'otp'; errorMsg = ''">Mobile OTP</button>
     </div>
 

@@ -1,1 +1,20 @@
 <router-outlet></router-outlet>
+
+<!-- REAL-TIME WEBSOCKET NOTIFICATION TOAST -->
+<div class="notification-toast" *ngIf="activeNotification" [class.show]="activeNotification">
+    <div class="toast-content">
+        <div class="toast-icon">
+            <i class="bi bi-broadcast"></i>
+        </div>
+        <div class="toast-body">
+            <h6 class="mb-1">{{ activeNotification.title }}</h6>
+            <p class="mb-0 small">{{ activeNotification.message }}</p>
+        </div>
+        <button class="btn-close btn-close-white" (click)="closeNotification()"></button>
+    </div>
+    <div class="toast-footer" *ngIf="activeNotification.link">
+        <button class="btn btn-sm btn-light w-100" (click)="navigateToNotification(activeNotification.link)">
+            Join Now
+        </button>
+    </div>
+</div>

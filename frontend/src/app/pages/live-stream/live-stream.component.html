@@ -7,6 +7,9 @@
             </div>
             <h2 *ngIf="isAdmin">Instructor Control Center</h2>
             <h2 *ngIf="!isAdmin">Live Learning Session</h2>
+            <button class="btn btn-outline-light btn-sm" (click)="exitSession()">
+                <i class="bi bi-x-circle me-1"></i> Exit Session
+            </button>
         </div>
 
         <div class="video-grid-container">

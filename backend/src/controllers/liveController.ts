@@ -106,9 +106,19 @@ export const notifyStudentsLive = async (req: Request, res: Response): Promise<v
             isRead: false
         }));
 
+        const { io } = require('../index');
+
         await Promise.all([
             ...emailPromises,
-            Notification.insertMany(dbNotifications).catch(err => console.error('Failed inserting DB notifs:', err))
+            Notification.insertMany(dbNotifications).catch(err => console.error('Failed inserting DB notifs:', err)),
+            ...students.map(student => {
+                io.to(student._id.toString()).emit('new-notification', {
+                    title: '🔴 Live Session Started!',
+                    message: `A live session for ${courseTitle} is starting now.`,
+                    link: `/live?courseId=${courseId || ''}`,
+                    timestamp: new Date()
+                });
+            })
         ]);
 
         res.status(200).json({ message: `Successfully notified ${students.length} students` });

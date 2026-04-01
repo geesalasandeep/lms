@@ -78,6 +78,11 @@ io.on('connection', (socket) => {
         socket.to(roomId).emit('user-connected', socket.id);
     });
 
+    socket.on('join-user-room', (userId: string) => {
+        console.log(`User ${userId} joined their private notification room`);
+        socket.join(userId);
+    });
+
     socket.on('broadcaster-ready', (roomId: string) => {
         socket.to(roomId).emit('broadcaster-ready');
     });

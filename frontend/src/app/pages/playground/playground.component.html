@@ -1,5 +1,8 @@
 <div class="playground-container" *ngIf="!loading">
     <div class="playground-sidebar">
+        <button class="btn btn-outline-light btn-sm w-100 mb-4" routerLink="/dashboard">
+            <i class="bi bi-arrow-left"></i> Exit Playground
+        </button>
         <div class="problem-list">
             <h5 class="section-title">DSA Problems</h5>
             <div class="problem-item" *ngFor="let p of problems" [class.active]="selectedProblem.id === p.id"
