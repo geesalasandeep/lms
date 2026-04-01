@@ -18,13 +18,15 @@ services:
       - key: NODE_VERSION
         value: 20
 
-  # 2. Frontend (Static Site)
-  # NOTE: Using 'static' type with version '1'
-  - type: static
+  # 2. Frontend (Node.js Web Service to Host Angular)
+  # This uses "type: web" to avoid the "unknown type static" error.
+  - type: web
     name: lms-frontend-antigravity
+    env: node
+    plan: free
     rootDir: frontend
     buildCommand: npm install && npm run build
-    staticPublishPath: ./dist/frontend/browser
-    routingRules:
-      - route: /*
-        rewritePath: /index.html
+    startCommand: npx -y serve -s dist/frontend/browser -p 10000
+    envVars:
+      - key: PORT
+        value: 10000
