@@ -1,0 +1,90 @@
+<div class="dashboard-container">
+    <div class="header d-flex justify-content-between align-items-center mb-4">
+        <h2>{{ user?.role === 'Admin' ? 'Admin' : 'Student' }} Dashboard</h2>
+        <div class="header-actions d-flex gap-2 align-items-center">
+
+            <!-- Notification Bell -->
+            <div class="notification-wrapper position-relative me-3" style="cursor: pointer;"
+                (click)="toggleNotifications()">
+                <span class="fs-4">🔔</span>
+                <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle"
+                    *ngIf="notificationService.unreadCount() > 0">
+                    {{ notificationService.unreadCount() }}
+                </span>
+
+                <!-- Dropdown menu -->
+                <div class="notifications-dropdown position-absolute end-0 mt-2 bg-dark border border-secondary rounded shadow p-2"
+                    *ngIf="showNotifications" style="width: 320px; z-index: 1000; max-height: 400px; overflow-y: auto;">
+                    <h6 class="border-bottom border-secondary pb-2 mb-2">Notifications</h6>
+                    <div class="notification-item p-2 mb-1 border-bottom border-secondary"
+                        *ngFor="let notif of notificationService.notifications()"
+                        [ngClass]="{'bg-secondary bg-opacity-25': !notif.isRead}"
+                        (click)="$event.stopPropagation(); handleNotificationClick(notif)">
+                        <h6 class="mb-1 text-white fs-6">{{ notif.title }} <span class="badge bg-primary ms-2"
+                                *ngIf="!notif.isRead">New</span></h6>
+                        <p class="mb-0  small" style="font-size: 0.85rem;">{{ notif.message }}</p>
+                        <small class="text-secondary" style="font-size: 0.70rem;">{{ notif.createdAt | date:'shortTime'
+                            }}</small>
+                    </div>
+                    <div *ngIf="notificationService.notifications().length === 0" class="text-center  p-3">
+                        No recent notifications.
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-secondary" (click)="router.navigate(['/'])">Discover More Courses</button>
+            <button class="btn btn-primary" *ngIf="user?.role === 'Admin'" (click)="goToAdmin()">Admin Panel</button>
+            <button class="btn btn-danger" (click)="logout()">Logout</button>
+        </div>
+    </div>
+
+    <div *ngIf="loading" class="loader text-primary text-center my-5">Loading your progress...</div>
+
+    <div *ngIf="!loading && dashboardData" class="stats-row">
+        <div class="stat-card card text-bg-dark mb-3">
+            <div class="card-body">
+                <h3 class="card-title  text-uppercase fs-6">Active Courses</h3>
+                <p class="big-num card-text fs-2 fw-bold text-white">{{ dashboardData?.activeCoursesCount || 0 }}</p>
+            </div>
+        </div>
+        <div class="stat-card card text-bg-dark mb-3">
+            <div class="card-body">
+                <h3 class="card-title  text-uppercase fs-6">Average Progress</h3>
+                <p class="big-num card-text fs-2 fw-bold text-white">{{ dashboardData?.averageProgress || 0 }}%</p>
+                <div class="progress mt-3 bg-secondary" style="height: 8px;">
+                    <div class="progress-bar bg-primary" role="progressbar"
+                        [style.width.%]="dashboardData?.averageProgress || 0"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="!loading && dashboardData" class="enrolled-list mt-5">
+        <h3 class="border-bottom border-secondary pb-2 mb-4">My Enrolled Courses</h3>
+        <div class="grid d-flex flex-column gap-3" *ngIf="dashboardData?.enrolledCourses?.length > 0; else noCourses">
+            <div class="enrolled-card card text-bg-dark p-3 d-flex flex-row justify-content-between align-items-center border-secondary"
+                *ngFor="let ec of dashboardData?.enrolledCourses">
+                <div class="details flex-grow-1 me-4">
+                    <h4 class="fs-5 mb-2">{{ ec?.courseId?.title || 'Unknown Course' }}</h4>
+                    <p class=" small mb-2">Progress: {{ ec?.progress || 0 }}%</p>
+                    <div class="progress bg-secondary" style="height: 8px;">
+                        <div class="progress-bar bg-primary" role="progressbar" [style.width.%]="ec?.progress || 0">
+                        </div>
+                    </div>
+                </div>
+                <div class="actions d-flex gap-2">
+                    <button class="btn btn-outline-success"
+                        (click)="goToPlayground(ec?.courseId?._id)">Practice</button>
+                    <button class="btn btn-primary" (click)="resumeCourse(ec?.courseId?._id)">Resume</button>
+                    <button class="btn btn-secondary" *ngIf="ec?.progress === 100"
+                        (click)="viewCertificate(ec?.courseId?._id)">View Certificate</button>
+                </div>
+            </div>
+        </div>
+        <ng-template #noCourses>
+            <div class="empty-state text-center  p-5 border border-dashed border-secondary rounded">
+                <p class="mb-0">You haven't enrolled in any courses yet.</p>
+            </div>
+        </ng-template>
+    </div>
+</div>

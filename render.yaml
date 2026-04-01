@@ -1,0 +1,34 @@
+services:
+  # 1. MongoDB Database (Render Managed or External)
+  # NOTE: Render's free tier Mongo is temporary. atlas is recommended.
+  # But we can define a web service for the backend.
+
+  # 2. Backend API (Node.js)
+  - type: web
+    name: lms-backend-antigravity
+    env: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 3000
+      - key: MONGODB_URI
+        sync: false # User to provide their Atlas URI
+      - key: JWT_SECRET
+        generateValue: true
+      - key: NODE_VERSION
+        value: 20
+
+  # 3. Frontend (Static Site)
+  - type: static
+    name: lms-frontend-antigravity
+    env: static
+    plan: free
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist/frontend/browser
+    routingRules:
+      - route: /*
+        rewritePath: /index.html

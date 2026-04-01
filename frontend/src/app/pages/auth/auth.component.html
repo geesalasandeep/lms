@@ -1,0 +1,71 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="branding">
+      <h2>LearnStream</h2>
+      <p>Your Gateway to Knowledge</p>
+    </div>
+
+    <div class="tabs">
+      <button [class.active]="activeTab === 'login'" (click)="activeTab = 'login'; errorMsg = ''">Login</button>
+      <button [class.active]="activeTab === 'register'" (click)="activeTab = 'register'; errorMsg = ''">Register</button>
+      <button [class.active]="activeTab === 'otp'" (click)="activeTab = 'otp'; errorMsg = ''">Mobile OTP</button>
+    </div>
+
+    <div class="error-msg" *ngIf="errorMsg">{{ errorMsg }}</div>
+
+    <!-- Login Form -->
+    <form *ngIf="activeTab === 'login'" (ngSubmit)="login()" class="auth-form">
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" [(ngModel)]="loginData.email" name="email" required />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" [(ngModel)]="loginData.password" name="password" required />
+      </div>
+      <button type="submit" class="btn-primary">Sign In</button>
+    </form>
+
+    <!-- Register Form -->
+    <form *ngIf="activeTab === 'register'" (ngSubmit)="register()" class="auth-form">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" [(ngModel)]="registerData.name" name="name" required />
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" [(ngModel)]="registerData.email" name="email" required />
+      </div>
+      <div class="form-group">
+        <label>Mobile Number</label>
+        <input type="text" [(ngModel)]="registerData.mobile" name="mobile" required />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" [(ngModel)]="registerData.password" name="password" required />
+      </div>
+      <div class="form-group">
+        <label>Role</label>
+        <select [(ngModel)]="registerData.role" name="role">
+          <option value="Student">Student</option>
+          <option value="Admin">Admin</option>
+        </select>
+      </div>
+      <button type="submit" class="btn-primary">Create Account</button>
+    </form>
+
+    <!-- OTP Form -->
+    <div *ngIf="activeTab === 'otp'" class="auth-form">
+      <div class="form-group" *ngIf="!otpSent">
+        <label>Mobile Number</label>
+        <input type="text" [(ngModel)]="otpData.mobile" name="mobile" required />
+        <button (click)="sendOtp()" class="btn-primary mt-2">Send OTP</button>
+      </div>
+      <div class="form-group" *ngIf="otpSent">
+        <label>Enter OTP</label>
+        <input type="text" [(ngModel)]="otpData.otp" name="otp" required />
+        <button (click)="verifyOtp()" class="btn-primary mt-2">Verify & Login</button>
+      </div>
+    </div>
+  </div>
+</div>

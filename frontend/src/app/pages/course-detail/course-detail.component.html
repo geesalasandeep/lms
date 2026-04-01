@@ -1,0 +1,44 @@
+<div class="course-detail-container" *ngIf="!loading && data">
+    <div class="hero">
+        <div class="hero-content">
+            <h1>{{ data.course.title }}</h1>
+            <p>{{ data.course.description }}</p>
+            <div class="meta">
+                <span>Instructor: {{ data.course.instructorId?.name || 'Admin' }}</span>
+                <button class="btn-primary" *ngIf="isEnrolled || isAdmin" (click)="router.navigate(['/dashboard'])">Go
+                    to Dashboard</button>
+                <button class="btn btn-danger ms-2" *ngIf="isAdmin" (click)="adminGoLive()">🔴 Start Live
+                    Session</button>
+                <button class="btn-primary" style="background-color: #10b981;" *ngIf="!isEnrolled && !isAdmin"
+                    (click)="enroll()">Enroll Now</button>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img [src]="data.course.thumbnailUrl || 'https://via.placeholder.com/600x400'" alt="Course Thumbnail" />
+        </div>
+    </div>
+
+    <div class="chapters-section">
+        <h2>Course Content</h2>
+        <div class="chapter-list">
+            <div class="chapter-card" *ngFor="let chapter of data.chapters; let i = index"
+                [class.locked]="!isChapterUnlocked(chapter._id)">
+                <div class="ch-info">
+                    <span class="order">{{ i + 1 }}</span>
+                    <div class="ch-text">
+                        <h4>{{ chapter.title }}</h4>
+                        <p>{{ chapter.durationMinutes }} mins</p>
+                    </div>
+                </div>
+                <button class="btn-play" [disabled]="!isChapterUnlocked(chapter._id)" (click)="playChapter(chapter)">
+                    <span *ngIf="!isChapterUnlocked(chapter._id)"><i class="bi bi-lock-fill me-2"></i>Locked</span>
+                    <span *ngIf="isChapterUnlocked(chapter._id)">Play Video</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="loader-container" *ngIf="loading">
+    <div class="spinner"></div>
+</div>

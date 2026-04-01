@@ -1,0 +1,36 @@
+<div class="home-container">
+    <div class="hero">
+        <h1>Welcome to LearnStream</h1>
+        <p>Discover courses, learn new skills, and advance your career.</p>
+        <div class="hero-actions mt-3">
+            <button class="btn btn-primary btn-lg" *ngIf="!isLoggedIn()" (click)="goToLogin()">Login to Start
+                Learning</button>
+            <button class="btn btn-success btn-lg" *ngIf="isLoggedIn()" (click)="goToDashboard()">Go to My
+                Dashboard</button>
+        </div>
+    </div>
+
+    <div class="course-list" *ngIf="!loading; else loader">
+        <div class="course-card" *ngFor="let course of courses" (click)="goToCourse(course._id)">
+            <div class="img-wrapper">
+                <img [src]="course.thumbnailUrl || 'https://via.placeholder.com/300x180'" alt="Thumbnail" />
+            </div>
+            <div class="content">
+                <h3>{{ course.title }}</h3>
+                <p class="desc">{{ course.description }}</p>
+                <div class="meta">
+                    <span class="price" *ngIf="course.price > 0">₹{{ course.price }}</span>
+                    <span class="price success" *ngIf="course.price === 0">Free</span>
+                    <span class="instructor">{{ course.instructorId?.name || 'Admin' }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <ng-template #loader>
+        <div class="loader-container">
+            <div class="spinner"></div>
+            <p>Loading courses...</p>
+        </div>
+    </ng-template>
+</div>

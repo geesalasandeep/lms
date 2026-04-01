@@ -1,0 +1,101 @@
+<div class="live-stream-container">
+    <div class="main-content">
+        <!-- Header with Session Status -->
+        <div class="stream-header">
+            <div class="status-badge" [ngClass]="{'live': isBroadcasting}">
+                {{ status }}
+            </div>
+            <h2 *ngIf="isAdmin">Instructor Control Center</h2>
+            <h2 *ngIf="!isAdmin">Live Learning Session</h2>
+        </div>
+
+        <div class="video-grid-container">
+            <!-- Broadcaster View (Admin) -->
+            <div class="video-card broadcaster" *ngIf="isAdmin || !status.includes('Disconnected')">
+                <video #localVideo autoplay muted playsinline class="video-element" [hidden]="!isAdmin"></video>
+                <video #remoteVideo autoplay [muted]="isRemoteMuted" playsinline class="video-element"
+                    [hidden]="isAdmin || !status.includes('Receiving')"></video>
+
+                <!-- Inner Placeholder for Student while handshake happens -->
+                <div class="inner-placeholder" *ngIf="!isAdmin && !status.includes('Receiving')">
+                    <p>Connecting to broadcast...</p>
+                </div>
+
+                <div class="video-label">{{ isAdmin ? 'You (Instructor)' : 'Instructor' }}</div>
+            </div>
+
+            <!-- Participant Grid (Admin sees students) -->
+            <ng-container *ngIf="isAdmin">
+                <div class="video-card participant" *ngFor="let peerId of Object.keys(remoteStreams)">
+                    <video [srcObject]="remoteStreams[peerId]" autoplay muted playsinline class="video-element"></video>
+                    <div class="video-label">Student ({{ peerId.substring(0,4) }})</div>
+                </div>
+            </ng-container>
+
+            <!-- Placeholder when no stream (Disconnected state) -->
+            <div class="video-placeholder" *ngIf="!isAdmin && status === 'Disconnected'">
+                <img src="https://via.placeholder.com/1280x720.png?text=Not+Connected" alt="Waiting">
+                <p>Establishing secure connection...</p>
+            </div>
+        </div>
+
+        <!-- Controls Footer -->
+        <div class="controls-bar">
+            <ng-container *ngIf="isAdmin">
+                <button class="control-btn" (click)="isBroadcasting ? stopBroadcast() : startBroadcast()"
+                    [ngClass]="{'btn-danger': isBroadcasting, 'btn-primary': !isBroadcasting}">
+                    {{ isBroadcasting ? '⏹ End Session' : '⏺ Go Live' }}
+                </button>
+                <button class="control-btn" (click)="toggleVideo()" *ngIf="isBroadcasting">
+                    {{ isVideoMuted ? '📹 Start Video' : '🚫 Stop Video' }}
+                </button>
+                <button class="control-btn" (click)="toggleAudio()" *ngIf="isBroadcasting">
+                    {{ isAudioMuted ? '🔊 Unmute' : '🔇 Mute' }}
+                </button>
+            </ng-container>
+
+            <ng-container *ngIf="!isAdmin">
+                <button class="control-btn btn-success" (click)="joinConversation()"
+                    *ngIf="status.includes('Receiving') && !mediaStream">
+                    🙋‍♂️ Join with Camera
+                </button>
+                <button class="control-btn btn-warning" (click)="manualJoin()" *ngIf="!status.includes('Receiving')">
+                    🔄 Re-sync Stream
+                </button>
+                <button class="control-btn" (click)="toggleRemoteMute()" *ngIf="status.includes('Receiving')">
+                    {{ isRemoteMuted ? '🔊 Unmute Audio' : '🔇 Mute Audio' }}
+                </button>
+            </ng-container>
+        </div>
+    </div>
+
+    <!-- Chat Sidebar -->
+    <div class="chat-sidebar">
+        <div class="chat-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h3 class="mb-0">Live Chat</h3>
+                <span class="badge bg-success-subtle text-success border border-success-subtle small"
+                    *ngIf="encryptionKey">
+                    <i class="bi bi-shield-lock-fill me-1"></i>E2EE Active
+                </span>
+            </div>
+        </div>
+        <div class="chat-messages" #scrollContainer>
+            <div class="message" [class.encrypted]="msg.isEncrypted" *ngFor="let msg of chatMessages">
+                <div class="user d-flex justify-content-between">
+                    <span>{{ msg.user }}:</span>
+                    <i class="bi bi-lock-fill text-success" *ngIf="msg.isEncrypted" title="End-to-End Encrypted"></i>
+                </div>
+                <span class="text">{{ msg.text }}</span>
+                <span class="time">{{ msg.timestamp | date:'shortTime' }}</span>
+            </div>
+            <div *ngIf="chatMessages.length === 0" class="empty-chat">
+                No questions yet. Be the first to ask!
+            </div>
+        </div>
+        <div class="chat-input">
+            <input type="text" [(ngModel)]="newMessage" (keyup.enter)="sendMessage()" placeholder="Type a message...">
+            <button (click)="sendMessage()">Send</button>
+        </div>
+    </div>
+</div>

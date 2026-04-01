@@ -1,0 +1,41 @@
+<div class="certificate-wrapper" *ngIf="!loading && !error">
+    <div class="actions no-print">
+        <button class="btn-secondary" (click)="goBack()">Back to Dashboard</button>
+        <button class="btn-primary" (click)="printCertificate()">Download / Print PDF</button>
+    </div>
+
+    <div class="certificate-container" id="certificate">
+        <div class="certificate-border">
+            <div class="certificate-content">
+                <div class="logo">SkillUp Academy</div>
+                <h1>Certificate of Completion</h1>
+                <p class="subtitle">This certifies that</p>
+                <h2 class="student-name">{{ certificateData.userName }}</h2>
+                <p class="subtitle">has successfully completed the course</p>
+                <h3 class="course-title">{{ certificateData.courseTitle }}</h3>
+
+                <div class="footer">
+                    <div class="date-section">
+                        <span class="label">Date Completed</span>
+                        <span class="value">{{ certificateData.completedAt | date:'longDate' }}</span>
+                    </div>
+                    <div class="signature-section">
+                        <span class="label">Instructor</span>
+                        <span class="value signature">{{ certificateData.instructorName }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="loader-container" *ngIf="loading">
+    <div class="loader">Verifying Certificate...</div>
+</div>
+
+<div class="error-container no-print" *ngIf="error">
+    <div class="empty-state">
+        <p>{{ error }}</p>
+        <button class="btn-secondary mt-2" (click)="goBack()">Return to Dashboard</button>
+    </div>
+</div>
