@@ -19,7 +19,7 @@ services:
         value: 20
 
   # 2. Frontend (Angular) - Type: STATIC SITE (Required for Routing Rules)
-  - type: static_site
+  - type: web
     name: lms-frontend-antigravity
     rootDir: frontend
     buildCommand: npm install && npm run build
