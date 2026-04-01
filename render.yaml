@@ -1,5 +1,6 @@
+version: "1"
 services:
-  # 1. Backend Service (Node.js)
+  # 1. Backend Service (Node.js) - Type: WEB
   - type: web
     name: lms-backend-antigravity
     env: node
@@ -17,8 +18,8 @@ services:
       - key: NODE_VERSION
         value: 20
 
-  # 2. Frontend (Static Site)
-  - type: web
+  # 2. Frontend (Angular) - Type: STATIC SITE (Required for Routing Rules)
+  - type: static_site
     name: lms-frontend-antigravity
     rootDir: frontend
     buildCommand: npm install && npm run build
